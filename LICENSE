@@ -1,0 +1,66 @@
+MIT License
+
+Copyright (c) 2024 Shai-Hulud Security Analysis Tool
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## 📖 Attribution & Credits
+
+### **Original Security Research**
+This tool is based on the groundbreaking research and discovery by the **Wiz Research Team**:
+
+- **Hila Ramati** - Security Researcher, Wiz
+- **Merav Bar** - Security Researcher, Wiz  
+- **Gal Benmocha** - Security Researcher, Wiz
+- **Gili Tikochinski** - Security Researcher, Wiz
+
+**Original Publication:** "Shai-Hulud 2.0 Supply Chain Attack: 25K+ Repos Exposing Secrets"  
+**Published:** November 24, 2025  
+**Organization:** [Wiz](https://www.wiz.io/)  
+**Original Article:** [https://www.wiz.io/blog/shai-hulud-2-supply-chain-attack](https://www.wiz.io/blog/shai-hulud-2-supply-chain-attack)
+
+### **Research Contributions**
+The original researchers discovered and documented:
+- 25,000+ malicious repositories across ~500 GitHub users
+- ~700 compromised npm packages with steady growth
+- Cross-victim data exfiltration techniques  
+- Preinstall-phase malware variants
+- Multi-cloud credential harvesting (AWS, Azure, GCP)
+- Docker privilege escalation vectors
+- CI/CD environment persistence mechanisms
+
+### **Educational Tool Development**
+This educational visualization tool was developed to help the security community understand the scope and impact of the original research. All vulnerability data, package information, and attack patterns are based on the original Wiz Research findings.
+
+### **Additional Security Community Credits**
+- **Aikido Security** - Additional analysis and reporting
+- **Step Security** - Threat intelligence contributions  
+- **GitHub Security Team** - Repository takedown and mitigation
+
+---
+
+## 🛡️ Third-Party Library Licenses
+- Next.js (MIT)
+- Drizzle ORM (Apache-2.0) 
+- SQLite (Public Domain)
+- Sentence Transformers (Apache-2.0)
+- Tailwind CSS (MIT)
+- Lucide Icons (MIT)

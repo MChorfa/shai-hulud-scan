@@ -6,12 +6,26 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "export": "npm run export-db && npm run build",
+    "export-db": "npx tsx scripts/export-for-github-pages.ts",
+    "deploy": "npm run export && git add . && git commit -m 'Deploy to GitHub Pages' && git push"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.8.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/sqlite3": "^3.1.11",
+    "better-sqlite3": "^12.4.6",
+    "drizzle-kit": "^0.31.7",
+    "drizzle-orm": "^0.44.7",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.554.0",
     "next": "16.0.4",
+    "openai": "^6.9.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "recharts": "^3.5.0",
+    "sqlite-vec": "^0.1.7-alpha.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
