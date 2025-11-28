@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Shai-Hulud Security Analysis Tool
+Copyright (c) 2025 Shai-Hulud Security Analysis Tool
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,6 @@ This educational visualization tool was developed to help the security community
 
 ## 🛡️ Third-Party Library Licenses
 - Next.js (MIT)
-- Drizzle ORM (Apache-2.0) 
 - SQLite (Public Domain)
 - Sentence Transformers (Apache-2.0)
 - Tailwind CSS (MIT)

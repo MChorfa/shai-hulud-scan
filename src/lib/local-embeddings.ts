@@ -85,7 +85,7 @@ class LocalEmbeddingsService {
     packages: Array<{ id: number; name: string; version: string; description?: string }>
   ): Promise<Array<{ id: number; embedding: number[]; error?: string }>> {
     const results = [];
-    
+
     for (const pkg of packages) {
       try {
         const embedding = await this.generatePackageEmbedding(
@@ -96,10 +96,10 @@ class LocalEmbeddingsService {
         results.push({ id: pkg.id, embedding });
       } catch (error) {
         console.error(`Failed to generate embedding for ${pkg.name}:`, error);
-        results.push({ 
-          id: pkg.id, 
-          embedding: [], 
-          error: error instanceof Error ? error.message : 'Unknown error' 
+        results.push({
+          id: pkg.id,
+          embedding: [],
+          error: error instanceof Error ? error.message : 'Unknown error'
         });
       }
     }
@@ -137,25 +137,45 @@ class LocalEmbeddingsService {
     }
   }
 
-  // Composite search combining FTS and semantic search
+  // Composite search combining FTS (BM25) and semantic search
   async compositeSearch(
     query: string,
-    ftsResults: PackageWithEmbedding[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ftsResults: Array<any>, // Expects objects with bm25_score
     packagesWithEmbeddings: PackageWithEmbedding[],
     topK: number = 10,
-    semanticWeight: number = 0.6
+    semanticWeight: number = 0.5
   ): Promise<SearchResult[]> {
     try {
       // Get semantic search results
       const semanticResults = await this.semanticSearch(query, packagesWithEmbeddings, topK * 2);
-      
-      // Create a map of FTS results with their scores (normalized)
-      const ftsMap = new Map<string, { package: PackageWithEmbedding; ftsScore: number }>();
-      ftsResults.forEach((pkg, index) => {
-        // Normalized FTS score (higher rank = higher score)
-        const ftsScore = 1 - (index / ftsResults.length);
-        ftsMap.set(`${pkg.name}-${pkg.version}`, { package: pkg, ftsScore });
-      });
+
+      // Normalize BM25 scores
+      // SQLite bm25() returns <= 0, closer to 0 is better.
+      // We want to map this to [0, 1] where 1 is best.
+      // Strategy: Find min and max (which is <= 0) in the batch.
+      // But since we only have the top K results, we can just normalize within this set.
+      // Or use a sigmoid-like function: 1 / (1 + abs(score))
+
+      const ftsMap = new Map<string, { package: PackageWithEmbedding; normalizedScore: number }>();
+
+      if (ftsResults.length > 0) {
+        // Find range for min-max normalization if needed, or just use rank-based
+        // Let's use a simple transformation for negative scores:
+        // score = 1 / (1 - raw_score)  (since raw_score is negative)
+        // If raw_score is -1, score = 0.5. If raw_score is -0.1, score = 0.9.
+        // If raw_score is -10, score = 0.09.
+
+        ftsResults.forEach((pkg) => {
+          const rawScore = pkg.bm25_score || -100; // Default low if missing
+          const normalizedScore = 1 / (1 - rawScore);
+
+          ftsMap.set(`${pkg.name}-${pkg.version}`, {
+            package: pkg as PackageWithEmbedding,
+            normalizedScore
+          });
+        });
+      }
 
       // Combine results
       const combinedResults: SearchResult[] = [];
@@ -167,9 +187,9 @@ class LocalEmbeddingsService {
         processedPackages.add(packageKey);
 
         const ftsData = ftsMap.get(packageKey);
-        const ftsScore = ftsData ? ftsData.ftsScore : 0;
-        
-        // Composite score: weighted combination of semantic and FTS scores
+        const ftsScore = ftsData ? ftsData.normalizedScore : 0;
+
+        // Composite score: weighted combination
         const compositeScore = (semanticWeight * result.similarity) + ((1 - semanticWeight) * ftsScore);
 
         combinedResults.push({
@@ -179,13 +199,15 @@ class LocalEmbeddingsService {
       });
 
       // Add any FTS-only results that weren't in semantic results
-      ftsResults.forEach((pkg, index) => {
+      ftsResults.forEach((pkg) => {
         const packageKey = `${pkg.name}-${pkg.version}`;
         if (!processedPackages.has(packageKey)) {
-          const ftsScore = 1 - (index / ftsResults.length);
+          const ftsData = ftsMap.get(packageKey);
+          const ftsScore = ftsData ? ftsData.normalizedScore : 0;
+
           combinedResults.push({
-            package: pkg,
-            similarity: (1 - semanticWeight) * ftsScore // Only FTS score
+            package: pkg as PackageWithEmbedding,
+            similarity: (1 - semanticWeight) * ftsScore // Only FTS score contribution
           });
         }
       });
@@ -198,9 +220,9 @@ class LocalEmbeddingsService {
     } catch (error) {
       console.error('Error in composite search:', error);
       // Fallback to FTS results only
-      return ftsResults.slice(0, topK).map((pkg, index) => ({
-        package: pkg,
-        similarity: 1 - (index / ftsResults.length)
+      return ftsResults.slice(0, topK).map((pkg) => ({
+        package: pkg as PackageWithEmbedding,
+        similarity: 0.5 // Dummy score
       }));
     }
   }

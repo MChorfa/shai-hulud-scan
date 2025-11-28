@@ -40,93 +40,14 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [stats, setStats] = useState<PackageStats | null>(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [embeddingsStats, setEmbeddingsStats] = useState<{
-    total: number;
-    withEmbeddings: number;
-    withoutEmbeddings: number;
-    completionPercentage: number;
-  } | null>(null);
-  const [isGeneratingEmbeddings, setIsGeneratingEmbeddings] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const response = await fetch("/api/packages");
-        const data = await response.json();
-        if (data.stats) {
-          setStats(data.stats);
-        }
-      } catch (error) {
-        console.error("Failed to load stats:", error);
-      }
-    };
-    loadStats();
-
-    // Load package stats
-    const loadPackageStats = async () => {
-      try {
-        let data;
-
-        if (isGitHubPages) {
-          // Use static stats for GitHub Pages
-          const { getPackageStatsStatic } = await import("@/lib/static-db");
-          data = await getPackageStatsStatic();
-        } else {
-          // Use API for development
-          const response = await fetch("/api/packages");
-          data = await response.json();
-        }
-
-        setStats(data.stats);
-      } catch (error) {
-        console.error("Failed to load package stats:", error);
-      }
-    };
-    loadPackageStats();
-
-    // Load embeddings stats
-    const loadEmbeddingsStats = async () => {
-      try {
-        // For GitHub Pages, use static data
-        if (isGitHubPages) {
-          const response = await fetch("/shai-hulud-security/data/stats.json");
-          const data = await response.json();
-          setEmbeddingsStats({
-            total: data.total,
-            withEmbeddings: data.total,
-            withoutEmbeddings: 0,
-            completionPercentage: 100,
-          });
-        } else {
-          // For development, check database directly
-          const response = await fetch("/api/packages");
-          const data = await response.json();
-          if (data.total) {
-            setEmbeddingsStats({
-              total: data.total,
-              withEmbeddings: data.total,
-              withoutEmbeddings: 0,
-              completionPercentage: 100,
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load embeddings stats:", error);
-        setEmbeddingsStats({
-          total: 795,
-          withEmbeddings: 795,
-          withoutEmbeddings: 0,
-          completionPercentage: 100,
-        }); // Fallback
-      }
-    };
-    loadEmbeddingsStats();
-  }, []);
-
+  // ... (inside handleSemanticSearch)
   const handleSemanticSearch = async () => {
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
+    setError(null);
     try {
       let data;
 
@@ -142,14 +63,86 @@ export default function Home() {
         data = await response.json();
       }
 
-      setSearchResults(data.results || []);
+      if (!data || !data.results) {
+        throw new Error("Invalid response format");
+      }
+
+      setSearchResults(data.results);
     } catch (error) {
       console.error("Search error:", error);
+      setError("Failed to perform search. Please try again.");
       setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
   };
+
+  // ... (inside JSX, above Results)
+  const [embeddingsStats, setEmbeddingsStats] = useState<{
+    total: number;
+    withEmbeddings: number;
+    withoutEmbeddings: number;
+    completionPercentage: number;
+  } | null>(null);
+  const [isGeneratingEmbeddings, setIsGeneratingEmbeddings] = useState(false);
+
+  useEffect(() => {
+    // Load package stats
+    const loadPackageStats = async () => {
+      try {
+        let data;
+
+        if (isGitHubPages) {
+          // Use static stats for GitHub Pages
+          const { getPackageStatsStatic } = await import("@/lib/static-db");
+          data = await getPackageStatsStatic();
+        } else {
+          // Use API for development
+          const response = await fetch("/api/packages");
+          data = await response.json();
+        }
+
+        if (data && data.stats) {
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to load package stats:", error);
+      }
+    };
+    loadPackageStats();
+
+    // Load embeddings stats
+    const loadEmbeddingsStats = async () => {
+      try {
+        // For GitHub Pages, use static data
+        if (isGitHubPages) {
+          const response = await fetch("/shai-hulud-scan/data/stats.json");
+          const data = await response.json();
+          setEmbeddingsStats({
+            total: data.total,
+            withEmbeddings: data.total,
+            withoutEmbeddings: 0,
+            completionPercentage: 100,
+          });
+        } else {
+          // For development, check database directly
+          const response = await fetch("/api/embeddings/generate");
+          const data = await response.json();
+          setEmbeddingsStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to load embeddings stats:", error);
+        setEmbeddingsStats({
+          total: 795,
+          withEmbeddings: 795,
+          withoutEmbeddings: 0,
+          completionPercentage: 100,
+        }); // Fallback
+      }
+    };
+    loadEmbeddingsStats();
+  }, []);
+
 
   const generateEmbeddings = async () => {
     setIsGeneratingEmbeddings(true);
@@ -242,13 +235,13 @@ export default function Home() {
             </div>
             <div className="bg-blue-900/30 border border-blue-500/50 px-4 py-2 backdrop-blur-sm">
               <span className="text-xs text-blue-300 uppercase block">
-                Attack Vector
+                Packages Affected
               </span>
               <span
                 className="text-lg font-bold text-blue-400"
                 style={{ fontFamily: "monospace" }}
               >
-                NPM Supply Chain
+                795
               </span>
             </div>
             <div className="bg-gray-900/30 border border-gray-500/50 px-4 py-2 backdrop-blur-sm">
@@ -320,9 +313,17 @@ export default function Home() {
                 className="inline-flex items-center gap-2 bg-blue-900/50 border border-blue-500 text-white px-6 py-2 font-mono hover:bg-blue-900/70 transition-colors"
               >
                 <Database className="w-4 h-4" />
-                UPLOAD PACKAGE-LOCK.JSON
+                UPLOAD PACKAGE-LOCK.JSON OR SBOM
               </a>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mt-6 bg-red-900/20 border border-red-500 p-4 flex items-center gap-3">
+                <AlertTriangle className="w-6 h-6 text-red-500" />
+                <p className="text-red-200">{error}</p>
+              </div>
+            )}
 
             {/* Results */}
             {searchResults.length > 0 && (
@@ -373,27 +374,27 @@ export default function Home() {
               {[
                 {
                   step: 1,
-                  title: "Compromise",
-                  desc: "Attacker steals maintainer tokens",
-                  icon: Shield,
-                },
-                {
-                  step: 2,
-                  title: "Poisoning",
-                  desc: "Malicious version published",
-                  icon: Database,
-                },
-                {
-                  step: 3,
-                  title: "Execution",
-                  desc: "Victim runs npm install",
+                  title: "Infection",
+                  desc: "Malware runs via 'preinstall' script",
                   icon: Zap,
                 },
                 {
-                  step: 4,
+                  step: 2,
+                  title: "Theft & Backdoor",
+                  desc: "Steals secrets & installs GitHub Runner",
+                  icon: Shield,
+                },
+                {
+                  step: 3,
                   title: "Exfiltration",
-                  desc: "Secrets pushed to GitHub",
+                  desc: "Pushes secrets to public GitHub repos",
                   icon: Eye,
+                },
+                {
+                  step: 4,
+                  title: "Propagation",
+                  desc: "Publishes new infected packages (Worm)",
+                  icon: Database,
                 },
               ].map((phase) => (
                 <div

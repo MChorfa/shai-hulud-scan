@@ -8,7 +8,7 @@ export async function initializeDatabase() {
   if (db) return db;
 
   const dbPath = path.join(process.cwd(), 'data', 'shai-hulud.db');
-  
+
   // Ensure data directory exists
   const dataDir = path.dirname(dbPath);
   if (!fs.existsSync(dataDir)) {
@@ -86,8 +86,8 @@ export async function initializeDatabase() {
 }
 
 async function loadPackageData() {
-  const csvPath = path.join(process.cwd(), '..', 'shai-hulud-2-packages.csv');
-  
+  const csvPath = path.join(process.cwd(), 'data', 'shai-hulud-2-packages.csv');
+
   if (!fs.existsSync(csvPath)) {
     console.log('CSV file not found, skipping initial data load');
     return;
@@ -103,9 +103,9 @@ async function loadPackageData() {
 
   for (const line of lines) {
     if (!line.trim()) continue;
-    
+
     const [name, version] = line.split(',').map(field => field.trim().replace(/^"|"$/g, ''));
-    
+
     if (name && version) {
       try {
         stmt.run(name, version);
@@ -130,7 +130,7 @@ export async function searchPackages(query: string, limit = 50): Promise<Array<{
 
   // Input validation and sanitization
   const searchTerm = query.trim();
-  
+
   // Security checks
   if (!searchTerm) return [];
   if (searchTerm.length > 100) return []; // Prevent overly long queries
@@ -164,6 +164,56 @@ export async function searchPackages(query: string, limit = 50): Promise<Array<{
   }>;
 }
 
+export async function searchPackagesBM25(query: string, limit = 50): Promise<Array<{
+  id: number;
+  name: string;
+  version: string;
+  risk_level?: string;
+  description?: string;
+  maintainer?: string;
+  bm25_score: number;
+}>> {
+  if (!db) await initializeDatabase();
+
+  const searchTerm = query.trim();
+  if (!searchTerm) return [];
+
+  // Sanitize for FTS5 (remove special chars that might break syntax)
+  // FTS5 allowed chars: alphanumeric, underscore, etc.
+  // We'll wrap in quotes for phrase search or just clean it up.
+  // For simplicity, let's just escape double quotes and use the query as is if possible, 
+  // or better, treat it as a simple token search.
+  const sanitizedQuery = searchTerm.replace(/"/g, '""');
+
+  // FTS5 MATCH query with BM25 ranking
+  // Note: SQLite bm25() returns a value <= 0. Closer to 0 is better.
+  const stmt = db!.prepare(`
+    SELECT 
+      p.id, p.name, p.version, p.risk_level, p.description, p.maintainer,
+      bm25(packages_fts) as bm25_score
+    FROM packages_fts fts
+    JOIN packages p ON p.id = fts.rowid
+    WHERE packages_fts MATCH ?
+    ORDER BY bm25(packages_fts) DESC
+    LIMIT ?
+  `);
+
+  try {
+    return stmt.all(sanitizedQuery, limit) as Array<{
+      id: number;
+      name: string;
+      version: string;
+      risk_level?: string;
+      description?: string;
+      maintainer?: string;
+      bm25_score: number;
+    }>;
+  } catch (error) {
+    console.error('FTS5 search error:', error);
+    return [];
+  }
+}
+
 export async function getPackagesByRisk(riskLevel: string, limit: number = 100) {
   if (!db) await initializeDatabase();
 
@@ -191,8 +241,8 @@ export async function getPackageStats() {
   `);
 
   const totalStmt = db!.prepare('SELECT COUNT(*) as total FROM packages');
-  
-  return { stats: statsStmt.all() as Array<{risk_level: string; count: number; percentage: number}>, total: (totalStmt.get() as {total: number}).total };
+
+  return { stats: statsStmt.all() as Array<{ risk_level: string; count: number; percentage: number }>, total: (totalStmt.get() as { total: number }).total };
 }
 
 export async function getRecentPackages(limit: number = 10) {
@@ -209,13 +259,13 @@ export async function getRecentPackages(limit: number = 10) {
 
 export async function savePackageEmbedding(id: number, embedding: number[]): Promise<void> {
   if (!db) await initializeDatabase();
-  
+
   const stmt = db!.prepare(`
     UPDATE packages 
     SET embedding = ? 
     WHERE id = ?
   `);
-  
+
   // Convert number array to buffer for storage
   const buffer = Buffer.from(new Float32Array(embedding).buffer);
   stmt.run(buffer, id);
@@ -246,7 +296,7 @@ export async function getPackagesWithEmbeddings(): Promise<Array<{
     description?: string;
     embedding: Buffer;
   }>;
-  
+
   // Convert buffers back to number arrays
   return results.map(row => ({
     ...row,
@@ -254,7 +304,7 @@ export async function getPackagesWithEmbeddings(): Promise<Array<{
   }));
 }
 
-export async function semanticSearchPackages(query: string, embeddings: Array<{id: number; embedding: number[]}>, topK: number = 10): Promise<Array<{
+export async function semanticSearchPackages(query: string, embeddings: Array<{ id: number; embedding: number[] }>, topK: number = 10): Promise<Array<{
   id: number;
   name: string;
   version: string;
@@ -263,7 +313,7 @@ export async function semanticSearchPackages(query: string, embeddings: Array<{i
   similarity: number;
 }>> {
   if (!db) await initializeDatabase();
-  
+
   if (!query || embeddings.length === 0) {
     return [];
   }
@@ -271,13 +321,13 @@ export async function semanticSearchPackages(query: string, embeddings: Array<{i
   // Get packages by IDs
   const ids = embeddings.map(e => e.id);
   const placeholders = ids.map(() => '?').join(',');
-  
+
   const stmt = db!.prepare(`
     SELECT id, name, version, description, risk_level 
     FROM packages 
     WHERE id IN (${placeholders})
   `);
-  
+
   const packages = stmt.all(...ids) as Array<{
     id: number;
     name: string;
@@ -285,7 +335,7 @@ export async function semanticSearchPackages(query: string, embeddings: Array<{i
     description?: string;
     risk_level?: string;
   }>;
-  
+
   // Combine with similarity scores
   return packages.map(pkg => {
     const embedding = embeddings.find(e => e.id === pkg.id);
@@ -323,6 +373,28 @@ export async function getPackagesWithoutEmbeddings(limit: number = 50): Promise<
     version: string;
     description?: string;
   }>;
+}
+
+export async function checkPackage(name: string, version: string): Promise<{
+  name: string;
+  version: string;
+  risk_level: string;
+  description: string;
+} | null> {
+  if (!db) await initializeDatabase();
+
+  const stmt = db!.prepare(`
+    SELECT name, version, risk_level, description 
+    FROM packages 
+    WHERE name = ? AND version = ?
+  `);
+
+  return stmt.get(name, version) as {
+    name: string;
+    version: string;
+    risk_level: string;
+    description: string;
+  } | null;
 }
 
 export default initializeDatabase;

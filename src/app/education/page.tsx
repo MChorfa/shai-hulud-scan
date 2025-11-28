@@ -56,12 +56,12 @@ export default function EducationPage() {
       sections: [
         {
           title: 'The Infection Cycle',
-          content: 'The complete lifecycle of a supply chain attack from compromise to exfiltration.',
+          content: 'The complete lifecycle of the Shai-Hulud 2.0 worm.',
           points: [
-            '1. Compromise - Attacker steals maintainer tokens',
-            '2. Poisoning - Malicious version published',
-            '3. Execution - Victim runs npm install',
-            '4. Exfiltration - Secrets pushed to GitHub'
+            '1. Infection - Malware runs via "preinstall" script',
+            '2. Theft & Backdoor - Steals secrets & installs "SHA1HULUD" GitHub Runner',
+            '3. Exfiltration - Secrets pushed to public GitHub repos',
+            '4. Propagation - Uses stolen tokens to publish new infected packages (Worm)'
           ]
         },
         {
@@ -191,9 +191,9 @@ export default function EducationPage() {
           content: 'Deep dive into the malware mechanics and propagation methods.',
           points: [
             'Preinstall script execution for immediate infection',
-            'Multi-platform payload support (Linux, Windows, macOS)',
-            'Sophisticated credential harvesting',
-            'Automated repository creation and exfiltration'
+            'Registers "SHA1HULUD" Self-Hosted Runner for persistence',
+            'Sophisticated credential harvesting (TruffleHog)',
+            'Automated worm-like propagation via stolen npm tokens'
           ]
         },
         {
@@ -215,7 +215,7 @@ export default function EducationPage() {
   return (
     <div className="min-h-screen bg-black text-red-50 selection:bg-red-900 selection:text-white">
       <Navigation />
-      
+
       {/* Header */}
       <header className="border-b border-red-900/50 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto px-6 py-6">
@@ -237,11 +237,10 @@ export default function EducationPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab.id
                     ? 'text-blue-500 border-b-2 border-blue-500 bg-blue-900/10'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
+                  }`}
               >
                 <tab.icon className="w-4 h-4" />
                 {tab.label}
@@ -262,7 +261,7 @@ export default function EducationPage() {
                 {index === 2 && <Lock className="w-6 h-6 text-blue-500" />}
                 {section.title}
               </h2>
-              
+
               <p className="text-gray-300 mb-6 leading-relaxed">{section.content}</p>
 
               {section.code && (
@@ -301,20 +300,20 @@ export default function EducationPage() {
               <Shield className="w-6 h-6 text-blue-500" />
               Analysis Instructions
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
                 <Package className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Upload SBOM</h3>
                 <p className="text-xs text-gray-400">Analyze your package-lock.json file</p>
               </button>
-              
+
               <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
                 <GitBranch className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Composite Search</h3>
                 <p className="text-xs text-gray-400">Use semantic + full-text search</p>
               </button>
-              
+
               <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
                 <Lock className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Local Embeddings</h3>

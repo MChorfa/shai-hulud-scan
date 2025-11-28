@@ -1,5 +1,5 @@
 {
-  "name": "shai-hulud-education",
+  "name": "shai-hulud-scan",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,14 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "npm run export-db && npm run build",
+    "export": "npm run export-db && STATIC_EXPORT=true next build",
     "export-db": "npx tsx scripts/export-for-github-pages.ts",
+    "build-db": "npx tsx scripts/build-db.ts",
     "deploy": "npm run export && git add . && git commit -m 'Deploy to GitHub Pages' && git push"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/sqlite3": "^3.1.11",
+    "@types/three": "^0.181.0",
     "better-sqlite3": "^12.4.6",
     "drizzle-kit": "^0.31.7",
     "drizzle-orm": "^0.44.7",
@@ -25,7 +27,8 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "recharts": "^3.5.0",
-    "sqlite-vec": "^0.1.7-alpha.2"
+    "sqlite-vec": "^0.1.7-alpha.2",
+    "three": "^0.181.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

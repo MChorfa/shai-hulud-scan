@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Shield, BookOpen, Home, FileText } from 'lucide-react';
+import { Shield, BookOpen, Home, FileText, Terminal } from 'lucide-react';
 
 export default function Navigation() {
   return (
@@ -10,28 +10,35 @@ export default function Navigation() {
             <Shield className="w-6 h-6" />
             <span className="text-xl">SHAI-HULUD 2.0</span>
           </Link>
-          
+
           <div className="flex items-center gap-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"
             >
               <Home className="w-4 h-4" />
               Dashboard
             </Link>
-            <Link 
-              href="/education" 
+            <Link
+              href="/education"
               className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"
             >
               <BookOpen className="w-4 h-4" />
               Education
             </Link>
-            <Link 
-              href="/analyze" 
+            <Link
+              href="/analyze"
               className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"
             >
               <FileText className="w-4 h-4" />
               Analyze SBOM
+            </Link>
+            <Link
+              href="/developers"
+              className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"
+            >
+              <Terminal className="w-4 h-4" />
+              Developers
             </Link>
           </div>
         </div>

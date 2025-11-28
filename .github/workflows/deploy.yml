@@ -20,11 +20,11 @@ jobs:
         node-version: '18'
         cache: 'npm'
         
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build application
-      run: npm run build
+    - name: Build with Dagger
+      uses: dagger/dagger-for-github@v6
+      with:
+        verb: call
+        args: build-site --source . export --path ./out
       
     - name: Add .nojekyll file
       run: touch out/.nojekyll
@@ -35,4 +35,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./out
-        destination_dir: shai-hulud-security

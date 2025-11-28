@@ -1,1 +1,0 @@
-{"name": "test", "version": "1.0.0", "dependencies": {"@asyncapi/parser": "^2.0.0", "@posthog/cli": "^0.5.0", "@zapier/zapier-sdk": "^0.15.0"}}

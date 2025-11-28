@@ -19,10 +19,10 @@ let isLoaded = false;
 
 export async function loadStaticDatabase(): Promise<void> {
   if (isLoaded) return;
-  
+
   try {
     // For GitHub Pages, load from a static JSON file
-    const response = await fetch('/shai-hulud-security/data/packages.json');
+    const response = await fetch('/shai-hulud-scan/data/packages.json');
     if (response.ok) {
       staticPackages = await response.json();
       isLoaded = true;
@@ -40,12 +40,12 @@ export async function loadStaticDatabase(): Promise<void> {
 // Search functions for static deployment
 export async function searchPackagesStatic(query: string, limit: number = 50): Promise<StaticPackage[]> {
   await loadStaticDatabase();
-  
+
   if (!query.trim()) return [];
-  
+
   const searchTerm = query.toLowerCase();
   const results = staticPackages
-    .filter(pkg => 
+    .filter(pkg =>
       pkg.name.toLowerCase().includes(searchTerm) ||
       (pkg.description && pkg.description.toLowerCase().includes(searchTerm))
     )
@@ -54,13 +54,13 @@ export async function searchPackagesStatic(query: string, limit: number = 50): P
       ...pkg,
       relevance_score: 1.0
     }));
-  
+
   return results;
 }
 
 export async function getPackagesByRiskStatic(riskLevel: string, limit: number = 100): Promise<StaticPackage[]> {
   await loadStaticDatabase();
-  
+
   return staticPackages
     .filter(pkg => pkg.risk_level === riskLevel)
     .slice(0, limit);
@@ -68,7 +68,7 @@ export async function getPackagesByRiskStatic(riskLevel: string, limit: number =
 
 export async function getPackageStatsStatic() {
   await loadStaticDatabase();
-  
+
   const criticalPackages = staticPackages.filter(pkg => pkg.risk_level === 'critical');
   const highPackages = staticPackages.filter(pkg => pkg.risk_level === 'high');
   const mediumPackages = staticPackages.filter(pkg => pkg.risk_level === 'medium');
@@ -90,7 +90,7 @@ export async function getPackageStatsStatic() {
 // For GitHub Pages, we'll use text search instead of semantic search
 export async function compositeSearchStatic(query: string, topK: number = 10) {
   const results = await searchPackagesStatic(query, topK);
-  
+
   return {
     results: results.map(pkg => ({
       ...pkg,
@@ -99,4 +99,11 @@ export async function compositeSearchStatic(query: string, topK: number = 10) {
     query,
     total: results.length
   };
+}
+// Check a single package against the static database
+export async function checkPackageStatic(name: string, version: string): Promise<StaticPackage | null> {
+  await loadStaticDatabase();
+
+  const pkg = staticPackages.find(p => p.name === name && p.version === version);
+  return pkg || null;
 }
