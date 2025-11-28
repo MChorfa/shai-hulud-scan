@@ -1,6 +1,6 @@
 module dagger/shai-hulud-check
 
-go 1.25.3
+go 1.24.0
 
 require (
 	github.com/99designs/gqlgen v0.17.81
