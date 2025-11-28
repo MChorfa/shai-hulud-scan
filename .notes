@@ -1,0 +1,189 @@
+# 📢 Communication Guide: Shai-Hulud Scan
+
+This guide provides templates and strategies for communicating about the **Shai-Hulud Scan** project on social media and within your organization.
+
+---
+
+## 🇬🇧 English Version
+
+### 🎯 Key Messaging
+*   **Educational**: This is a tool to *understand* supply chain attacks, not just a scanner.
+*   **Privacy-First**: The static version runs entirely in the browser. No data leaves the user's machine.
+*   **Modern Tech**: Showcases Dagger, Vector Search, and Next.js 15.
+*   **Attribution**: Always credit Wiz Research for the original discovery.
+
+### 💼 LinkedIn Template
+
+**Headline**: Visualizing the Shai-Hulud 2.0 Supply Chain Attack with Next.js & Dagger
+
+**Body**:
+Supply chain attacks are getting smarter. To better understand the recent "Shai-Hulud 2.0" attack discovered by the Wiz Research Team, I built a visualization and analysis tool: **Shai-Hulud Scan**.
+
+🚀 **What it does:**
+*   **Visualizes** the scope of the attack (795+ compromised packages).
+*   **Analyzes** your `package-lock.json` or `sbom` for infections instantly.
+*   **Demonstrates** modern engineering with a dual-mode architecture (Docker + Static GitHub Pages).
+
+🛠️ **Under the hood:**
+*   **Frontend**: Next.js 15 + Tailwind CSS (CRT Theme)
+*   **Search**: Hybrid Vector Search (BM25 + Embeddings) with Transformers.js
+*   **Pipeline**: Fully automated CI/CD with Dagger 🗡️
+*   **Database**: SQLite (local) / Static JSON (web)
+
+The goal is to raise awareness and provide a safe, educational sandbox for exploring these threats.
+
+Check it out here: [https://mchorfa.github.io/shai-hulud-scan]
+Code: [https://github.com/MChorfa/shai-hulud-scan/tree/main]
+
+#CyberSecurity #SupplyChainSecurity #NextJS #Dagger #DevSecOps #OpenSource
+
+### 🐦 Twitter / X Template
+
+**Tweet 1/3:**
+Just shipped "Shai-Hulud Scan" 🐛 — an educational tool to visualize and analyze the massive Shai-Hulud 2.0 supply chain attack.
+
+Check if your deps are affected instantly (runs 100% in-browser!):
+👉 [https://mchorfa.github.io/shai-hulud-scan]
+
+**Tweet 2/3:**
+Built with a "Dual-Mode" architecture:
+🖥️ **Local**: Full Docker app with SQLite & Vector Search API.
+🌐 **Web**: Static Next.js export where the DB is loaded into browser memory for privacy.
+
+Powered by @dagger_io for the CI/CD pipeline! 🗡️
+
+**Tweet 3/3:**
+Huge shoutout to the @Wiz_IO Research Team for the original discovery and data. This tool is for awareness and education.
+
+Code is open source: [Link to Repo]
+
+#InfoSec #JavaScript #Engineering
+
+### 🏢 Internal Team Announcement (Slack/Teams)
+
+**Subject**: New Tool: Shai-Hulud Scan (Supply Chain Security Education)
+
+**Message**:
+Hey team,
+
+I've released a new scan tool called **Shai-Hulud Scan**. It's an interactive dashboard designed to help us understand the recent "Shai-Hulud 2.0" npm supply chain attack.
+
+**Why check it out?**
+1.  **Quick Scan**: You can drop a `package-lock.json` or `SBOM` to see if any dependencies match the compromised list (795 packages).
+2.  **Tech Demo**: It uses a cool "Hybrid Search" implementation (Vector + Keyword) and runs entirely in the browser for the static version.
+3.  **CI/CD**: The project uses **Dagger** for a portable, code-first pipeline.
+
+**Try it here**: [https://mchorfa.github.io/shai-hulud-scan]
+**Code**: [https://github.com/MChorfa/shai-hulud-scan/tree/main]
+
+Let me know what you think!
+
+---
+
+## 🇫🇷 Version Française
+
+### 🎯 Messages Clés
+*   **Éducatif**: C'est un outil pour *comprendre* les attaques de la chaîne logistique, pas seulement un scanner.
+*   **Confidentialité**: La version statique s'exécute entièrement dans le navigateur. Aucune donnée ne quitte la machine de l'utilisateur.
+*   **Tech Moderne**: Met en avant Dagger, la recherche vectorielle et Next.js 15.
+*   **Attribution**: Toujours créditer l'équipe de recherche Wiz pour la découverte originale.
+
+### 💼 Modèle LinkedIn
+
+**Titre**: Visualisation de l'attaque Shai-Hulud 2.0 avec Next.js & Dagger
+
+**Corps**:
+Les attaques de la chaîne logistique deviennent de plus en plus sophistiquées. Pour mieux comprendre la récente attaque "Shai-Hulud 2.0" découverte par l'équipe de recherche Wiz, j'ai créé un outil de visualisation et d'analyse : **Shai-Hulud Scan**.
+
+🚀 **Fonctionnalités :**
+*   **Visualise** l'ampleur de l'attaque (plus de 795 paquets compromis).
+*   **Analyse** instantanément votre `package-lock.json` ou `sbom` pour détecter les infections.
+*   **Démontre** une ingénierie moderne avec une architecture double (Docker + GitHub Pages Statique).
+
+🛠️ **Sous le capot :**
+*   **Frontend**: Next.js 15 + Tailwind CSS (Thème CRT)
+*   **Recherche**: Recherche Vectorielle Hybride (BM25 + Embeddings) avec Transformers.js
+*   **Pipeline**: CI/CD entièrement automatisé avec Dagger 🗡️
+*   **Base de données**: SQLite (local) / JSON Statique (web)
+
+L'objectif est de sensibiliser et de fournir un environnement éducatif sûr pour explorer ces menaces.
+
+À découvrir ici : [https://mchorfa.github.io/shai-hulud-scan]
+Code : [https://github.com/MChorfa/shai-hulud-scan/tree/main]
+
+#CyberSecurity #SupplyChainSecurity #NextJS #Dagger #DevSecOps #OpenSource
+
+### 🐦 Modèle Twitter / X
+
+**Tweet 1/3:**
+Je viens de publier "Shai-Hulud Scan" 🐛 — un outil éducatif pour visualiser et analyser l'attaque massive de la chaîne logistique Shai-Hulud 2.0.
+
+Vérifiez instantanément si vos dépendances sont affectées (s'exécute à 100% dans le navigateur !) :
+👉 [https://mchorfa.github.io/shai-hulud-scan]
+
+**Tweet 2/3:**
+Construit avec une architecture "Dual-Mode" :
+🖥️ **Local** : App Docker complète avec SQLite & API de recherche vectorielle.
+🌐 **Web** : Export statique Next.js où la DB est chargée dans la mémoire du navigateur pour la confidentialité.
+
+Propulsé par @dagger_io pour le pipeline CI/CD ! 🗡️
+
+**Tweet 3/3:**
+Grand merci à l'équipe de recherche @Wiz_IO pour la découverte originale et les données. Cet outil est pour la sensibilisation et l'éducation.
+
+Le code est open source : [Lien vers le Repo]
+
+#InfoSec #JavaScript #Engineering
+
+### 🏢 Annonce Interne (Slack/Teams)
+
+**Sujet**: Nouvel Outil : Shai-Hulud Scan (Éducation Sécurité Chaîne Logistique)
+
+**Message**:
+Bonjour l'équipe,
+
+J'ai publié un nouvel outil appelé **Shai-Hulud Scan**. C'est un tableau de bord interactif conçu pour nous aider à comprendre la récente attaque de la chaîne logistique npm "Shai-Hulud 2.0".
+
+**Pourquoi y jeter un œil ?**
+1.  **Scan Rapide** : Vous pouvez déposer un `package-lock.json` ou un `SBOM` pour voir si des dépendances correspondent à la liste compromise (795 paquets).
+2.  **Démo Tech** : Il utilise une implémentation "Recherche Hybride" (Vecteur + Mots-clés) et s'exécute entièrement dans le navigateur pour la version statique.
+3.  **CI/CD** : Le projet utilise **Dagger** pour un pipeline portable et "code-first".
+
+**Essayez-le ici** : [https://mchorfa.github.io/shai-hulud-scan]
+**Code** : [https://github.com/MChorfa/shai-hulud-scan/tree/main]
+
+Dites-moi ce que vous en pensez !
+
+---
+
+## 🗡️ How to Use Dagger / Comment utiliser Dagger
+
+This project uses [Dagger](https://dagger.io) for its CI/CD pipeline. / Ce projet utilise [Dagger](https://dagger.io) pour son pipeline CI/CD.
+
+### Prerequisites / Prérequis
+*   Docker installed and running / Docker installé et en cours d'exécution
+*   Dagger CLI installed (`brew install dagger/tap/dagger`) / CLI Dagger installée
+
+### Commands / Commandes
+
+**1. List available functions / Lister les fonctions disponibles**
+```bash
+dagger functions
+```
+
+**2. Run the full pipeline (Test, Scan, Build) / Lancer le pipeline complet**
+```bash
+dagger call pipeline --source .
+```
+
+**3. Build the static site / Construire le site statique**
+This generates the `out/` directory ready for GitHub Pages. / Cela génère le dossier `out/` prêt pour GitHub Pages.
+```bash
+dagger call build-site --source . export --path ./out
+```
+
+**4. Run security check locally / Lancer le scan de sécurité localement**
+Checks your `package-lock.json` against the database. / Vérifie votre `package-lock.json` contre la base de données.
+```bash
+dagger call check --source .
+```
