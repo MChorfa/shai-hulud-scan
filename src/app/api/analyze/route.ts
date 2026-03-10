@@ -37,6 +37,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
         }
 
+        // Limit file size to 10 MB to prevent DoS
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+        if (file.size > MAX_FILE_SIZE) {
+            return NextResponse.json({ error: 'File too large. Maximum size is 10 MB.' }, { status: 413 });
+        }
+
         const text = await file.text();
         let lockFile;
         try {
