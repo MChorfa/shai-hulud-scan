@@ -1,14 +1,17 @@
-import Link from 'next/link';
-import { Shield, BookOpen, Home, FileText, Terminal } from 'lucide-react';
+import Link from "next/link";
+import { Shield, BookOpen, Home, FileText, Terminal } from "lucide-react";
 
 export default function Navigation() {
   return (
     <nav className="border-b border-red-900/50 bg-[#0a0a0a]">
       <div className="max-w-6xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-red-500 font-bold">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-red-500 font-bold"
+          >
             <Shield className="w-6 h-6" />
-            <span className="text-xl">SHAI-HULUD 2.0</span>
+            <span className="text-xl">SHAI-HULUD SCAN</span>
           </Link>
 
           <div className="flex items-center gap-6">

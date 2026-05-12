@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shai-Hulud Scan – npm Supply Chain Attack Visualizer",
+  title: "Shai-Hulud Scan - Supply Chain Attack Detection",
   description:
-    "Educational visualization and analysis tool for the Shai-Hulud 2.0 npm supply chain attack. Scan your dependencies against 795+ compromised packages.",
+    "Detect compromised packages from Shai-Hulud 2.0 and Mini Shai-Hulud supply chain attacks. Scan your dependencies, SBOM, and package.json for IOCs and malicious patterns.",
 };
 
 export default function RootLayout({
