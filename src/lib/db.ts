@@ -492,6 +492,7 @@ export async function getPackagesWithEmbeddings(): Promise<
 
 export async function semanticSearchPackages(
   query: string,
+  queryEmbedding: number[],
   embeddings: Array<{ id: number; embedding: number[] }>,
   topK: number = 10,
 ): Promise<
@@ -506,7 +507,7 @@ export async function semanticSearchPackages(
 > {
   if (!db) await initializeDatabase();
 
-  if (!query || embeddings.length === 0) {
+  if (!query || embeddings.length === 0 || queryEmbedding.length === 0) {
     return [];
   }
 
@@ -534,17 +535,32 @@ export async function semanticSearchPackages(
       const embedding = embeddings.find((e) => e.id === pkg.id);
       return {
         ...pkg,
-        similarity: embedding ? cosineSimilarity() : 0,
+        similarity: embedding ? cosineSimilarity(queryEmbedding, embedding.embedding) : 0,
       };
     })
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, topK);
 }
 
-function cosineSimilarity(): number {
-  // This is a simplified similarity calculation
-  // In a real implementation, you'd generate an embedding for the query and calculate actual cosine similarity
-  return Math.random() * 0.5 + 0.5; // Placeholder for demo
+/**
+ * Compute cosine similarity between two vectors.
+ * Returns a value in [-1, 1] where 1 means identical direction.
+ */
+function cosineSimilarity(a: number[], b: number[]): number {
+  if (a.length !== b.length || a.length === 0) return 0;
+
+  let dot = 0;
+  let normA = 0;
+  let normB = 0;
+
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  return denom === 0 ? 0 : dot / denom;
 }
 
 export async function getPackagesWithoutEmbeddings(limit: number = 50): Promise<

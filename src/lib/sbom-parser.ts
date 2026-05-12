@@ -25,7 +25,7 @@ interface PackageJsonFinding {
 
 interface SBOMParseResult {
   packages: PackageInfo[];
-  format: "spdx" | "cyclonedx" | "package-lock" | "package-json" | "unknown";
+  format: "spdx" | "cyclonedx" | "package-lock" | "package-json" | "simple-text" | "unknown";
   metadata?: {
     name?: string;
     version?: string;
@@ -516,7 +516,7 @@ class SBOMParser {
 
     return {
       packages,
-      format: "package-lock", // Treat as package-lock for compatibility
+      format: "simple-text",
     };
   }
 

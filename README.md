@@ -60,7 +60,7 @@ npm start
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: Next.js 14, React 18, TypeScript
+- **Frontend**: Next.js 16, React 19, TypeScript
 - **Database**: SQLite with Drizzle ORM
 - **Search**: Full-text + Semantic vector search
 - **Embeddings**: Local sentence-transformers (no API keys required)
@@ -70,18 +70,13 @@ npm start
 ## 📡 API Endpoints
 
 ### Search & Analysis
-- `POST /api/analyze` - SBOM package analysis
-- `GET /api/packages` - Package search and statistics
-- `POST /api/search/composite` - Hybrid text + semantic search
-- `POST /api/search/semantic` - Pure semantic search
-
-### Management
-- `GET /api/performance` - Performance metrics
-- `GET /api/database` - Database statistics
-- `POST /api/database?action=optimize` - Database optimization
+- `POST /api/analyze` - SBOM / package-lock.json analysis
+- `GET /api/packages` - Package statistics
+- `GET /api/search/composite?q=<query>` - Hybrid FTS + semantic search
 
 ### Embeddings
-- `POST /api/embeddings/generate` - Generate package embeddings
+- `GET /api/embeddings/generate` - Embedding generation progress
+- `POST /api/embeddings/generate` - Generate package embeddings (batch)
 
 ## 🏆 Performance Metrics
 

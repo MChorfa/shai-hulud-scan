@@ -43,3 +43,7 @@ next-env.d.ts
 
 # cache
 .cache/
+
+# SQLite WAL mode transient files
+data/*.db-wal
+data/*.db-shm

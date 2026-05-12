@@ -64,22 +64,21 @@ func (m *ShaiHuludCheck) Check(ctx context.Context, source *d.Directory) (string
 
 // Test runs the project's test suite (linting and unit tests).
 func (m *ShaiHuludCheck) Test(ctx context.Context, source *d.Directory) (string, error) {
-	_, err := dag.Container().
-		From("node:22-bookworm").
+	out, err := dag.Container().
+		From("node:22-bookworm-slim").
 		WithDirectory("/app", source).
 		WithWorkdir("/app").
 		WithExec([]string{"npm", "ci"}).
 		WithExec([]string{"npm", "run", "lint"}).
+		WithExec([]string{"npm", "test"}).
 		Stdout(ctx)
 
 	if err != nil {
 		return "", err
 	}
 
-	// If we had unit tests, we'd run them here too:
-	// .WithExec([]string{"npm", "test"})
-
-	return "✅ Tests passed (linting)", nil
+	_ = out
+	return "✅ Tests passed (linting + unit tests)", nil
 }
 
 // Scan is an alias for Check, specifically for scanning the repository itself.
