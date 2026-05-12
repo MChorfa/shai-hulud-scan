@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
-const path = require('path');
 const https = require('https');
 
 const DEFAULT_PKG_URL = 'https://mchorfa.github.io/shai-hulud-scan/data/packages.json';
@@ -52,7 +52,7 @@ async function fetchDatabase(url) {
             res.on('end', () => {
                 try {
                     resolve(JSON.parse(data));
-                } catch (e) {
+                } catch (_) {
                     reject(new Error('Failed to parse database JSON'));
                 }
             });
@@ -138,7 +138,7 @@ function checkPackageJson(content, iocs) {
                 }
             }
         }
-    } catch (e) {
+    } catch (_) {
         // Not valid package.json, ignore
     }
     return findings;
@@ -156,7 +156,7 @@ async function run() {
         let parsedJson;
         try {
             parsedJson = JSON.parse(fileContent);
-        } catch (e) {
+        } catch (_) {
             console.error(`\x1b[31mError: ${scanFilePath} is not valid JSON.\x1b[0m`);
             process.exit(1);
         }
@@ -185,8 +185,8 @@ async function run() {
         let iocs = [];
         try {
             iocs = await fetchDatabase(iocUrl);
-        } catch (e) {
-            console.warn(`Could not fetch IOC database: ${e.message}`);
+        } catch (err) {
+            console.warn(`Could not fetch IOC database: ${err.message}`);
         }
 
         // 4. Check package.json for IOC patterns
@@ -221,7 +221,7 @@ async function run() {
                         infected.push(match);
                     }
                 }
-            } catch (e) {
+            } catch (_) {
                 // Ignore parse errors
             }
         }

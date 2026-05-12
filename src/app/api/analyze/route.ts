@@ -3,31 +3,39 @@ import { checkPackage } from "@/lib/db";
 import { SBOMParser } from "@/lib/sbom-parser";
 
 // Helper to extract dependencies from raw package-lock.json (fallback)
-function findDependencies(lockFile: any, deps = new Set<string>()) {
-  if (lockFile.dependencies) {
-    for (const [name, detail] of Object.entries(lockFile.dependencies) as [
-      string,
-      any,
-    ][]) {
-      const version = detail.version.replace(/^= /, "");
-      deps.add(`${name}@${version}`);
+function findDependencies(
+  lockFile: Record<string, unknown>,
+  deps = new Set<string>(),
+) {
+  const depsMap = lockFile.dependencies as
+    | Record<string, Record<string, unknown>>
+    | undefined;
+  if (depsMap) {
+    for (const [name, detail] of Object.entries(depsMap)) {
+      const version = (detail.version as string | undefined)?.replace(
+        /^= /,
+        "",
+      );
+      if (version) deps.add(`${name}@${version}`);
       if (detail.dependencies) {
         findDependencies(detail, deps);
       }
     }
   }
-  if (lockFile.packages) {
-    for (const [pkgPath, detail] of Object.entries(lockFile.packages) as [
-      string,
-      any,
-    ][]) {
-      let name = detail.name;
+  const packagesMap = lockFile.packages as
+    | Record<string, Record<string, unknown>>
+    | undefined;
+  if (packagesMap) {
+    for (const [pkgPath, detail] of Object.entries(packagesMap)) {
+      let name = detail.name as string | undefined;
       if (!name && pkgPath.startsWith("node_modules/")) {
         name = pkgPath.replace("node_modules/", "");
       }
-
-      if (name && detail.version) {
-        const version = detail.version.replace(/^= /, "");
+      const version = (detail.version as string | undefined)?.replace(
+        /^= /,
+        "",
+      );
+      if (name && version) {
         deps.add(`${name}@${version}`);
       }
     }
