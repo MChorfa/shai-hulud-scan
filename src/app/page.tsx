@@ -13,6 +13,7 @@ interface SearchResult {
   description: string | null;
   maintainer: string | null;
   relevance_score: number;
+  campaign?: string;
 }
 
 import {
@@ -41,6 +42,12 @@ export default function Home() {
   const [stats, setStats] = useState<PackageStats | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [campaignFilter, setCampaignFilter] = useState<
+    "all" | "shai-hulud-2" | "mini-shai-hulud"
+  >("all");
+  const [activeAttackTab, setActiveAttackTab] = useState<
+    "shai-hulud-2" | "mini-shai-hulud"
+  >("shai-hulud-2");
 
   // ... (inside handleSemanticSearch)
   const handleSemanticSearch = async () => {
@@ -58,7 +65,7 @@ export default function Home() {
       } else {
         // Use API for development
         const response = await fetch(
-          `/api/search/composite?q=${encodeURIComponent(searchQuery)}`
+          `/api/search/composite?q=${encodeURIComponent(searchQuery)}`,
         );
         data = await response.json();
       }
@@ -143,7 +150,6 @@ export default function Home() {
     loadEmbeddingsStats();
   }, []);
 
-
   const generateEmbeddings = async () => {
     setIsGeneratingEmbeddings(true);
     try {
@@ -210,15 +216,17 @@ export default function Home() {
 
           <h1
             className="text-4xl md:text-6xl font-black text-white mb-4 glitch"
-            data-text="SHAI-HULUD 2.0"
+            data-text="SHAI-HULUD SCAN"
             style={{ fontFamily: "monospace" }}
           >
-            SHAI-HULUD 2.0
+            SHAI-HULUD SCAN
           </h1>
 
           <p className="text-lg md:text-xl text-blue-400 font-light mb-4 max-w-2xl mx-auto">
-            <span className="text-white font-bold">795</span> compromised
-            packages detected. Check if your dependencies are affected.
+            Tracking{" "}
+            <span className="text-white font-bold">Shai-Hulud 2.0</span> and{" "}
+            <span className="text-white font-bold">Mini Shai-Hulud</span> supply
+            chain attacks. Check if your dependencies are affected.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -235,13 +243,26 @@ export default function Home() {
             </div>
             <div className="bg-blue-900/30 border border-blue-500/50 px-4 py-2 backdrop-blur-sm">
               <span className="text-xs text-blue-300 uppercase block">
-                Packages Affected
+                Shai-Hulud 2.0
               </span>
               <span
                 className="text-lg font-bold text-blue-400"
                 style={{ fontFamily: "monospace" }}
               >
-                795
+                {stats?.total
+                  ? stats.total - (stats as any).miniCount || 0
+                  : 795}
+              </span>
+            </div>
+            <div className="bg-purple-900/30 border border-purple-500/50 px-4 py-2 backdrop-blur-sm">
+              <span className="text-xs text-purple-300 uppercase block">
+                Mini Shai-Hulud
+              </span>
+              <span
+                className="text-lg font-bold text-purple-400"
+                style={{ fontFamily: "monospace" }}
+              >
+                {(stats as any)?.miniCount || 24}
               </span>
             </div>
             <div className="bg-gray-900/30 border border-gray-500/50 px-4 py-2 backdrop-blur-sm">
@@ -259,7 +280,7 @@ export default function Home() {
 
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">
-              Database: Shai-Hulud 2.0 | Last Updated: Nov 2025
+              Databases: Shai-Hulud 2.0 (Nov 2025) + Mini Shai-Hulud (May 2026)
             </p>
           </div>
         </div>
@@ -280,7 +301,7 @@ export default function Home() {
             </h2>
             <p className="text-gray-300 mb-6">
               Check if your dependencies are compromised in the Shai-Hulud 2.0
-              attack
+              or Mini Shai-Hulud attacks
             </p>
 
             {/* Search Input - Prominent */}
@@ -329,32 +350,59 @@ export default function Home() {
             {searchResults.length > 0 && (
               <div className="mt-6 border-t border-gray-700 pt-6">
                 <h3 className="text-lg font-bold text-red-400 mb-4">
-                  INFECTED PACKAGES FOUND ({searchResults.length})
+                  INFECTED PACKAGES FOUND (
+                  {
+                    searchResults.filter(
+                      (r) =>
+                        campaignFilter === "all" ||
+                        r.campaign === campaignFilter,
+                    ).length
+                  }
+                  )
                 </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {searchResults.map((pkg: SearchResult, index: number) => (
-                    <div
-                      key={index}
-                      className="bg-red-900/20 border border-red-500/50 p-4"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-mono text-red-400 font-bold text-lg">
-                            {pkg.name}
-                          </h4>
-                          <p className="text-sm text-gray-300">
-                            Version: {pkg.version}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {pkg.description}
-                          </p>
+                  {searchResults
+                    .filter(
+                      (r) =>
+                        campaignFilter === "all" ||
+                        r.campaign === campaignFilter,
+                    )
+                    .map((pkg: SearchResult, index: number) => (
+                      <div
+                        key={index}
+                        className="bg-red-900/20 border border-red-500/50 p-4"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-mono text-red-400 font-bold text-lg">
+                              {pkg.name}
+                            </h4>
+                            <p className="text-sm text-gray-300">
+                              Version: {pkg.version}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {pkg.description}
+                            </p>
+                            <div className="flex gap-2 mt-2">
+                              {pkg.campaign && (
+                                <span
+                                  className={`text-xs font-mono px-2 py-0.5 rounded ${
+                                    pkg.campaign === "mini-shai-hulud"
+                                      ? "bg-purple-900/50 text-purple-300 border border-purple-500/30"
+                                      : "bg-blue-900/50 text-blue-300 border border-blue-500/30"
+                                  }`}
+                                >
+                                  {pkg.campaign}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <span className="bg-red-600 text-white text-sm px-3 py-1 font-mono font-bold">
+                            INFECTED
+                          </span>
                         </div>
-                        <span className="bg-red-600 text-white text-sm px-3 py-1 font-mono font-bold">
-                          INFECTED
-                        </span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             )}
@@ -365,38 +413,90 @@ export default function Home() {
             <div className="absolute top-0 right-0 p-2 opacity-20 text-4xl font-bold text-gray-700 pointer-events-none">
               ANATOMY
             </div>
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-              <Activity className="w-6 h-6 text-red-500" />
-              How the Attack Works
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Activity className="w-6 h-6 text-red-500" />
+                How the Attack Works
+              </h2>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setActiveAttackTab("shai-hulud-2")}
+                  className={`text-xs font-mono py-1 px-3 border transition-colors ${
+                    activeAttackTab === "shai-hulud-2"
+                      ? "bg-blue-900/50 border-blue-500 text-blue-300"
+                      : "bg-black/50 border-gray-700 text-gray-400 hover:border-gray-500"
+                  }`}
+                >
+                  Shai-Hulud 2.0
+                </button>
+                <button
+                  onClick={() => setActiveAttackTab("mini-shai-hulud")}
+                  className={`text-xs font-mono py-1 px-3 border transition-colors ${
+                    activeAttackTab === "mini-shai-hulud"
+                      ? "bg-purple-900/50 border-purple-500 text-purple-300"
+                      : "bg-black/50 border-gray-700 text-gray-400 hover:border-gray-500"
+                  }`}
+                >
+                  Mini Shai-Hulud
+                </button>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                {
-                  step: 1,
-                  title: "Infection",
-                  desc: "Malware runs via 'preinstall' script",
-                  icon: Zap,
-                },
-                {
-                  step: 2,
-                  title: "Theft & Backdoor",
-                  desc: "Steals secrets & installs GitHub Runner",
-                  icon: Shield,
-                },
-                {
-                  step: 3,
-                  title: "Exfiltration",
-                  desc: "Pushes secrets to public GitHub repos",
-                  icon: Eye,
-                },
-                {
-                  step: 4,
-                  title: "Propagation",
-                  desc: "Publishes new infected packages (Worm)",
-                  icon: Database,
-                },
-              ].map((phase) => (
+              {(activeAttackTab === "shai-hulud-2"
+                ? [
+                    {
+                      step: 1,
+                      title: "Infection",
+                      desc: "Malware runs via 'preinstall' script",
+                      icon: Zap,
+                    },
+                    {
+                      step: 2,
+                      title: "Theft & Backdoor",
+                      desc: "Steals secrets & installs GitHub Runner",
+                      icon: Shield,
+                    },
+                    {
+                      step: 3,
+                      title: "Exfiltration",
+                      desc: "Pushes secrets to public GitHub repos",
+                      icon: Eye,
+                    },
+                    {
+                      step: 4,
+                      title: "Propagation",
+                      desc: "Publishes new infected packages (Worm)",
+                      icon: Database,
+                    },
+                  ]
+                : [
+                    {
+                      step: 1,
+                      title: "Account Compromise",
+                      desc: "Maintainer account hijacked via phishing",
+                      icon: Shield,
+                    },
+                    {
+                      step: 2,
+                      title: "Dependency Injection",
+                      desc: "Malicious optionalDependencies added to package.json",
+                      icon: Zap,
+                    },
+                    {
+                      step: 3,
+                      title: "Prepare Script",
+                      desc: "Payload delivered via 'exit 1' + 'bun' pattern",
+                      icon: Eye,
+                    },
+                    {
+                      step: 4,
+                      title: "Harvest",
+                      desc: "Secrets exfiltrated before build fails",
+                      icon: Database,
+                    },
+                  ]
+              ).map((phase) => (
                 <div
                   key={phase.step}
                   className="bg-black/50 border border-gray-700 p-4 hover:border-red-500 transition-colors cursor-pointer group"
@@ -433,6 +533,23 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Campaign Breakdown */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-blue-900/20 border border-blue-500/30 p-3">
+                    <div className="text-xl font-bold text-blue-400">
+                      {(stats as any).shaiHulud2Count ||
+                        stats.total - ((stats as any).miniCount || 0)}
+                    </div>
+                    <div className="text-xs text-gray-400">Shai-Hulud 2.0</div>
+                  </div>
+                  <div className="bg-purple-900/20 border border-purple-500/30 p-3">
+                    <div className="text-xl font-bold text-purple-400">
+                      {(stats as any).miniCount || 0}
+                    </div>
+                    <div className="text-xs text-gray-400">Mini</div>
+                  </div>
+                </div>
+
                 {stats.stats.map(
                   (
                     stat: {
@@ -440,7 +557,7 @@ export default function Home() {
                       count: number;
                       percentage: number;
                     },
-                    index: number
+                    index: number,
                   ) => (
                     <div
                       key={index}
@@ -458,11 +575,49 @@ export default function Home() {
                         {stat.percentage}% of total
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </section>
           )}
+
+          {/* IOC Summary */}
+          <section className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-sm">
+            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Eye className="w-5 h-5 text-purple-500" />
+              IOC Summary
+            </h2>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center bg-black/50 border border-gray-700 p-3">
+                <span className="text-sm text-gray-400">File Hashes</span>
+                <span className="text-lg font-bold text-purple-400">4</span>
+              </div>
+              <div className="flex justify-between items-center bg-black/50 border border-gray-700 p-3">
+                <span className="text-sm text-gray-400">Domains</span>
+                <span className="text-lg font-bold text-purple-400">5</span>
+              </div>
+              <div className="flex justify-between items-center bg-black/50 border border-gray-700 p-3">
+                <span className="text-sm text-gray-400">Commits</span>
+                <span className="text-lg font-bold text-purple-400">4</span>
+              </div>
+              <div className="flex justify-between items-center bg-black/50 border border-gray-700 p-3">
+                <span className="text-sm text-gray-400">Patterns</span>
+                <span className="text-lg font-bold text-purple-400">8</span>
+              </div>
+              <div className="flex justify-between items-center bg-black/50 border border-gray-700 p-3">
+                <span className="text-sm text-gray-400">Persistence Paths</span>
+                <span className="text-lg font-bold text-purple-400">12</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-gray-700">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-bold text-white">
+                    Total IOCs
+                  </span>
+                  <span className="text-xl font-bold text-purple-400">33</span>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* Advanced Search */}
           <section className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-sm">
@@ -496,6 +651,33 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {/* Campaign Filter */}
+            <div className="flex gap-1 mb-3">
+              {[
+                { id: "all", label: "All" },
+                { id: "shai-hulud-2", label: "Shai-Hulud 2.0" },
+                { id: "mini-shai-hulud", label: "Mini" },
+              ].map((cf) => (
+                <button
+                  key={cf.id}
+                  onClick={() =>
+                    setCampaignFilter(cf.id as typeof campaignFilter)
+                  }
+                  className={`flex-1 text-xs font-mono py-1 px-2 border transition-colors ${
+                    campaignFilter === cf.id
+                      ? cf.id === "mini-shai-hulud"
+                        ? "bg-purple-900/50 border-purple-500 text-purple-300"
+                        : cf.id === "shai-hulud-2"
+                          ? "bg-blue-900/50 border-blue-500 text-blue-300"
+                          : "bg-gray-800 border-gray-500 text-white"
+                      : "bg-black/50 border-gray-700 text-gray-400 hover:border-gray-500"
+                  }`}
+                >
+                  {cf.label}
+                </button>
+              ))}
+            </div>
 
             <div className="flex gap-2 mb-4">
               <input
@@ -543,10 +725,12 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                 <div>
-                  <h3 className="font-bold text-white mb-1">Upload SBOM</h3>
+                  <h3 className="font-bold text-white mb-1">
+                    Upload package.json
+                  </h3>
                   <p className="text-gray-300 text-sm">
-                    Upload your package-lock.json or SBOM file for complete
-                    project analysis
+                    Upload your package.json, package-lock.json, or SBOM file
+                    for complete project analysis including optionalDependencies
                   </p>
                 </div>
               </div>
@@ -586,8 +770,6 @@ export default function Home() {
           </section>
         </div>
       </main>
-
-
     </div>
   );
 }

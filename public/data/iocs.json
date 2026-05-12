@@ -1,0 +1,266 @@
+[
+  {
+    "id": 30,
+    "type": "cache_key",
+    "value": "Linux-pnpm-store-6f9233a50def742c09fde54f56553d6b449a535adf87d4083690539f49ae4da11",
+    "campaign": "mini-shai-hulud",
+    "description": "Poisoned GitHub Actions cache key used in attack",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 10,
+    "type": "commit",
+    "value": "79ac49eedf774dd4b0cfa308722bc463cfe5885c",
+    "campaign": "mini-shai-hulud",
+    "description": "Orphan commit in attacker fork used for @tanstack/setup optionalDependency",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 33,
+    "type": "cve",
+    "value": "CVE-2026-45321",
+    "campaign": "mini-shai-hulud",
+    "description": "CVE assigned to the Mini Shai-Hulud supply chain compromise",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 5,
+    "type": "domain",
+    "value": "api.masscan.cloud",
+    "campaign": "mini-shai-hulud",
+    "description": "Secondary C2 / exfiltration domain",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 1,
+    "type": "domain",
+    "value": "filev2.getsession.org",
+    "campaign": "mini-shai-hulud",
+    "description": "Primary exfiltration endpoint via Session/Oxen messenger network",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 6,
+    "type": "domain",
+    "value": "git-tanstack.com",
+    "campaign": "mini-shai-hulud",
+    "description": "Typosquat / phishing domain",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 7,
+    "type": "domain",
+    "value": "litter.catbox.moe",
+    "campaign": "mini-shai-hulud",
+    "description": "Catbox file hosting used for second-stage payloads",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 2,
+    "type": "domain",
+    "value": "seed1.getsession.org",
+    "campaign": "mini-shai-hulud",
+    "description": "Session/Oxen P2P seed node for exfiltration",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 3,
+    "type": "domain",
+    "value": "seed2.getsession.org",
+    "campaign": "mini-shai-hulud",
+    "description": "Session/Oxen P2P seed node for exfiltration",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 4,
+    "type": "domain",
+    "value": "seed3.getsession.org",
+    "campaign": "mini-shai-hulud",
+    "description": "Session/Oxen P2P seed node for exfiltration",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 9,
+    "type": "file_hash",
+    "value": "2ec78d556d696e208927cc503d48e4b5eb56b31abc2870c2ed2e98d6be27fc96",
+    "campaign": "mini-shai-hulud",
+    "description": "tanstack_runner.js - prepare script runner that triggers router_init.js",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 8,
+    "type": "file_hash",
+    "value": "ab4fcadaec49c03278063dd269ea5eef82d24f2124a8e15d7b90f2fa8601266c",
+    "campaign": "mini-shai-hulud",
+    "description": "router_init.js - 2.3 MB obfuscated credential-stealing payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 34,
+    "type": "ghsa",
+    "value": "GHSA-g7cv-rxg3-hmpx",
+    "campaign": "mini-shai-hulud",
+    "description": "GitHub Security Advisory for TanStack npm compromise",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 21,
+    "type": "path",
+    "value": ".claude/router_runtime.js",
+    "campaign": "mini-shai-hulud",
+    "description": "Persistence file dropped by payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 22,
+    "type": "path",
+    "value": ".claude/setup.mjs",
+    "campaign": "mini-shai-hulud",
+    "description": "Persistence file dropped by payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 27,
+    "type": "path",
+    "value": ".github/workflows/codeql_analysis.yml",
+    "campaign": "mini-shai-hulud",
+    "description": "Injected workflow that exfiltrates secrets via toJSON(secrets)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 23,
+    "type": "path",
+    "value": ".vscode/setup.mjs",
+    "campaign": "mini-shai-hulud",
+    "description": "Persistence file dropped by payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 25,
+    "type": "path",
+    "value": "~/.config/systemd/user/gh-token-monitor.service",
+    "campaign": "mini-shai-hulud",
+    "description": "Systemd service for dead-man's switch (Linux)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 24,
+    "type": "path",
+    "value": "~/.local/bin/gh-token-monitor.sh",
+    "campaign": "mini-shai-hulud",
+    "description": "Dead-man's switch script (Linux)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 26,
+    "type": "path",
+    "value": "~/Library/LaunchAgents/com.user.gh-token-monitor.plist",
+    "campaign": "mini-shai-hulud",
+    "description": "LaunchAgent for dead-man's switch (macOS)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 13,
+    "type": "pattern",
+    "value": "claude@users.noreply.github.com",
+    "campaign": "mini-shai-hulud",
+    "description": "Impersonated commit author used for dead-drop commits",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 19,
+    "type": "pattern",
+    "value": "ctf-scramble-v2",
+    "campaign": "mini-shai-hulud",
+    "description": "Fisher-Yates PRNG identifier shared across Bitwarden/SAP/TanStack waves",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 14,
+    "type": "pattern",
+    "value": "dependabout/",
+    "campaign": "mini-shai-hulud",
+    "description": "Dead-drop branch name prefix (impersonates Dependabot)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 12,
+    "type": "pattern",
+    "value": "github:tanstack/router#79ac49eedf774dd4b0cfa308722bc463cfe5885c",
+    "campaign": "mini-shai-hulud",
+    "description": "Malicious optionalDependency pattern injected into package.json",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 11,
+    "type": "repository",
+    "value": "https://github.com/zblgg/configuration",
+    "campaign": "mini-shai-hulud",
+    "description": "Attacker fork used for Pwn Request and cache poisoning",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 17,
+    "type": "string",
+    "value": "EveryBoiWeBuildIsAWormyBoi",
+    "campaign": "mini-shai-hulud",
+    "description": "Internal campaign name recovered from deobfuscated payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 15,
+    "type": "string",
+    "value": "IfYouRevokeThisTokenItWillWipeTheComputerOfTheOwner",
+    "campaign": "mini-shai-hulud",
+    "description": "Campaign string recovered from deobfuscated payload",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 18,
+    "type": "string",
+    "value": "OhNoWhatsGoingOnWithGitHub",
+    "campaign": "mini-shai-hulud",
+    "description": "Magic string used in fallback token recovery via GitHub search",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 16,
+    "type": "string",
+    "value": "svksjrhjkcejg",
+    "campaign": "mini-shai-hulud",
+    "description": "Campaign PBKDF2 salt (unique to Mini Shai-Hulud wave; useful for YARA)",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 29,
+    "type": "url",
+    "value": "https://litter.catbox.moe/7rrc6l.mjs",
+    "campaign": "mini-shai-hulud",
+    "description": "Second-stage payload URL",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 28,
+    "type": "url",
+    "value": "https://litter.catbox.moe/h8nc9u.js",
+    "campaign": "mini-shai-hulud",
+    "description": "Second-stage payload URL",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 31,
+    "type": "workflow_run",
+    "value": "25613093674",
+    "campaign": "mini-shai-hulud",
+    "description": "GitHub Actions run ID for malicious publish wave 1",
+    "first_seen": "2026-05-12 15:22:33"
+  },
+  {
+    "id": 32,
+    "type": "workflow_run",
+    "value": "25691781302",
+    "campaign": "mini-shai-hulud",
+    "description": "GitHub Actions run ID for malicious publish wave 2",
+    "first_seen": "2026-05-12 15:22:33"
+  }
+]
