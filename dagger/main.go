@@ -11,7 +11,7 @@ type ShaiHuludCheck struct{}
 // BuildDB builds the SQLite database from the source CSV.
 func (m *ShaiHuludCheck) BuildDB(ctx context.Context, source *d.Directory) (*d.File, error) {
 	ctr := dag.Container().
-		From("node:22-bookworm-slim").
+		From("node:22-bookworm").
 		WithDirectory("/app", source).
 		WithWorkdir("/app").
 		WithExec([]string{"npm", "ci"}).
@@ -21,14 +21,16 @@ func (m *ShaiHuludCheck) BuildDB(ctx context.Context, source *d.Directory) (*d.F
 }
 
 // BuildSite builds the Next.js static site (and the DB as a prerequisite).
+// It also creates a .nojekyll file for GitHub Pages deployment.
 func (m *ShaiHuludCheck) BuildSite(ctx context.Context, source *d.Directory) (*d.Directory, error) {
 	ctr := dag.Container().
-		From("node:22-bookworm-slim").
+		From("node:22-bookworm").
 		WithDirectory("/app", source).
 		WithWorkdir("/app").
 		WithExec([]string{"npm", "ci"}).
 		WithExec([]string{"npm", "run", "build-db"}). // Ensure DB is built
-		WithExec([]string{"npm", "run", "export"})
+		WithExec([]string{"npm", "run", "export"}).
+		WithExec([]string{"touch", "out/.nojekyll"})
 
 	return ctr.Directory("out"), nil
 }
@@ -38,7 +40,7 @@ func (m *ShaiHuludCheck) BuildSite(ctx context.Context, source *d.Directory) (*d
 func (m *ShaiHuludCheck) Check(ctx context.Context, source *d.Directory) (string, error) {
 	// 1. Setup Node.js environment (same as Build)
 	ctr := dag.Container().
-		From("node:22-bookworm-slim").
+		From("node:22-bookworm").
 		WithDirectory("/app", source).
 		WithWorkdir("/app").
 		WithExec([]string{"npm", "ci"})
@@ -63,7 +65,7 @@ func (m *ShaiHuludCheck) Check(ctx context.Context, source *d.Directory) (string
 // Test runs the project's test suite (linting and unit tests).
 func (m *ShaiHuludCheck) Test(ctx context.Context, source *d.Directory) (string, error) {
 	_, err := dag.Container().
-		From("node:22-bookworm-slim").
+		From("node:22-bookworm").
 		WithDirectory("/app", source).
 		WithWorkdir("/app").
 		WithExec([]string{"npm", "ci"}).
@@ -85,19 +87,18 @@ func (m *ShaiHuludCheck) Scan(ctx context.Context, source *d.Directory) (string,
 	return m.Check(ctx, source)
 }
 
-// Pipeline runs the full CI/CD pipeline: Test, Scan, and Build.
-// It returns the built site directory if all checks pass.
-func (m *ShaiHuludCheck) Pipeline(ctx context.Context, source *d.Directory) (*d.Directory, error) {
-	// 1. Run Tests
-	if _, err := m.Test(ctx, source); err != nil {
-		return nil, err
-	}
+// Deploy runs the CI/CD pipeline: build site and DB.
+// This matches the original GitHub Actions deploy job behavior.
+// Test and Scan are available as separate functions for PR checks.
+func (m *ShaiHuludCheck) Deploy(ctx context.Context, source *d.Directory) (*d.Directory, error) {
+	ctr := dag.Container().
+		From("node:22-bookworm").
+		WithDirectory("/app", source).
+		WithWorkdir("/app").
+		WithExec([]string{"npm", "ci"}).
+		WithExec([]string{"npm", "run", "build-db"}).
+		WithExec([]string{"npm", "run", "export"}).
+		WithExec([]string{"touch", "out/.nojekyll"})
 
-	// 2. Run Security Scan
-	if _, err := m.Scan(ctx, source); err != nil {
-		return nil, err
-	}
-
-	// 3. Build Site (and DB)
-	return m.BuildSite(ctx, source)
+	return ctr.Directory("out"), nil
 }

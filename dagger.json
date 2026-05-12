@@ -1,6 +1,8 @@
 {
   "name": "shai-hulud-check",
-  "engineVersion": "v0.13.7",
-  "sdk": "go",
+  "engineVersion": "v0.20.8",
+  "sdk": {
+    "source": "go"
+  },
   "source": "dagger"
 }
