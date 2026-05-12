@@ -15,7 +15,7 @@ interface PackageInfo {
 
 interface SBOMParseResult {
   packages: PackageInfo[];
-  format: 'spdx' | 'cyclonedx' | 'package-lock' | 'unknown';
+  format: 'spdx' | 'cyclonedx' | 'package-lock' | 'simple-text' | 'unknown';
   metadata?: {
     name?: string;
     version?: string;
@@ -348,7 +348,7 @@ class SBOMParser {
 
     return {
       packages,
-      format: 'package-lock' // Treat as package-lock for compatibility
+      format: 'simple-text'
     };
   }
 

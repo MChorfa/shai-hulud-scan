@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const DEFAULT_DB_URL = 'https://[MChorfa].github.io/shai-hulud-scan/data/packages.json'; // Placeholder, will need to be updated by user or dynamically determined
+const DEFAULT_DB_URL = 'https://mchorfa.github.io/shai-hulud-scan/data/packages.json';
 const LOCK_FILE = 'package-lock.json';
 
 // Parse command line arguments
