@@ -29,6 +29,8 @@ import Navigation from "@/components/Navigation";
 
 interface PackageStats {
   total: number;
+  miniCount?: number;
+  shaiHulud2Count?: number;
   stats: Array<{
     risk_level: string;
     count: number;
@@ -249,9 +251,7 @@ export default function Home() {
                 className="text-lg font-bold text-blue-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {stats?.total
-                  ? stats.total - (stats as any).miniCount || 0
-                  : 795}
+                {stats?.total ? stats.total - (stats.miniCount || 0) : 795}
               </span>
             </div>
             <div className="bg-purple-900/30 border border-purple-500/50 px-4 py-2 backdrop-blur-sm">
@@ -262,7 +262,7 @@ export default function Home() {
                 className="text-lg font-bold text-purple-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {(stats as any)?.miniCount || 24}
+                {stats?.miniCount || 24}
               </span>
             </div>
             <div className="bg-gray-900/30 border border-gray-500/50 px-4 py-2 backdrop-blur-sm">
@@ -537,14 +537,14 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="bg-blue-900/20 border border-blue-500/30 p-3">
                     <div className="text-xl font-bold text-blue-400">
-                      {(stats as any).shaiHulud2Count ||
-                        stats.total - ((stats as any).miniCount || 0)}
+                      {stats.shaiHulud2Count ||
+                        stats.total - (stats.miniCount || 0)}
                     </div>
                     <div className="text-xs text-gray-400">Shai-Hulud 2.0</div>
                   </div>
                   <div className="bg-purple-900/20 border border-purple-500/30 p-3">
                     <div className="text-xl font-bold text-purple-400">
-                      {(stats as any).miniCount || 0}
+                      {stats.miniCount || 0}
                     </div>
                     <div className="text-xs text-gray-400">Mini</div>
                   </div>

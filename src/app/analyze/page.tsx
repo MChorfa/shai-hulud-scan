@@ -4,13 +4,11 @@ import { useState } from "react";
 import {
   Upload,
   AlertTriangle,
-  CheckCircle,
   XCircle,
   FileText,
   Bug,
   Terminal,
   Package,
-  Activity,
   ShieldAlert,
   Hash,
   BarChart3,
@@ -78,32 +76,38 @@ export default function AnalyzePage() {
         // Fallback for package-lock.json v1
         if (dependencies.size === 0 && parseResult.format === "package-lock") {
           try {
-            const lockFile = JSON.parse(text);
+            const lockFile = JSON.parse(text) as Record<string, unknown>;
             const findDependencies = (
-              lockFile: any,
+              node: Record<string, unknown>,
               deps = new Set<string>(),
             ) => {
-              if (lockFile.dependencies) {
-                for (const [name, detail] of Object.entries(
-                  lockFile.dependencies,
-                ) as [string, any][]) {
-                  const version = detail.version.replace(/^= /, "");
-                  deps.add(`${name}@${version}`);
+              const depsMap = node.dependencies as
+                | Record<string, Record<string, unknown>>
+                | undefined;
+              if (depsMap) {
+                for (const [name, detail] of Object.entries(depsMap)) {
+                  const version = (
+                    detail.version as string | undefined
+                  )?.replace(/^= /, "");
+                  if (version) deps.add(`${name}@${version}`);
                   if (detail.dependencies) {
                     findDependencies(detail, deps);
                   }
                 }
               }
-              if (lockFile.packages) {
-                for (const [pkgPath, detail] of Object.entries(
-                  lockFile.packages,
-                ) as [string, any][]) {
-                  let name = detail.name;
+              const packagesMap = node.packages as
+                | Record<string, Record<string, unknown>>
+                | undefined;
+              if (packagesMap) {
+                for (const [pkgPath, detail] of Object.entries(packagesMap)) {
+                  let name = detail.name as string | undefined;
                   if (!name && pkgPath.startsWith("node_modules/")) {
                     name = pkgPath.replace("node_modules/", "");
                   }
-                  if (name && detail.version) {
-                    const version = detail.version.replace(/^= /, "");
+                  const version = (
+                    detail.version as string | undefined
+                  )?.replace(/^= /, "");
+                  if (name && version) {
                     deps.add(`${name}@${version}`);
                   }
                 }
