@@ -2,16 +2,7 @@
 
 import React from "react";
 import Navigation from "@/components/Navigation";
-import {
-  Terminal,
-  Server,
-  Shield,
-  Code,
-  Database,
-  Cpu,
-  Globe,
-  Box,
-} from "lucide-react";
+import { Terminal, Server, Code, Cpu, Globe, Box } from "lucide-react";
 
 export default function Developers() {
   return (
@@ -37,7 +28,7 @@ export default function Developers() {
             </span>
           </h1>
           <p className="text-xl text-blue-400 font-mono">
-            // Technical Documentation & API Reference
+            Technical Documentation & API Reference
           </p>
         </header>
 
@@ -116,7 +107,7 @@ export default function Developers() {
                     </p>
                     <div className="bg-black border border-gray-800 p-4 rounded font-mono text-xs text-gray-300 overflow-x-auto">
                       curl
-                      "http://localhost:3000/api/search/composite?q=react&limit=5"
+                      &quot;http://localhost:3000/api/search/composite?q=react&limit=5&quot;
                     </div>
                   </div>
                 </div>
@@ -138,7 +129,7 @@ export default function Developers() {
                       database.
                     </p>
                     <div className="bg-black border border-gray-800 p-4 rounded font-mono text-xs text-gray-300 overflow-x-auto">
-                      curl -X POST -F "file=@package-lock.json"
+                      curl -X POST -F &quot;file=@package-lock.json&quot;
                       http://localhost:3000/api/analyze
                     </div>
                   </div>
