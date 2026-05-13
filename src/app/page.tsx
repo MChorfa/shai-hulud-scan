@@ -36,6 +36,7 @@ interface PackageStats {
     count: number;
     percentage: number;
   }>;
+  campaigns: Array<{ campaign: string; count: number }>;
 }
 
 export default function Home() {
@@ -112,7 +113,21 @@ export default function Home() {
         }
 
         if (data && data.stats) {
-          setStats(data);
+          // Derive campaign counts from the campaigns array
+          const campaigns = data.campaigns || [];
+          const miniCount = campaigns.find(
+            (c: { campaign: string; count: number }) =>
+              c.campaign === "mini-shai-hulud",
+          )?.count;
+          const shaiHulud2Count = campaigns.find(
+            (c: { campaign: string; count: number }) =>
+              c.campaign === "shai-hulud-2",
+          )?.count;
+          setStats({
+            ...data,
+            miniCount,
+            shaiHulud2Count,
+          });
         }
       } catch (error) {
         console.error("Failed to load package stats:", error);
@@ -142,8 +157,8 @@ export default function Home() {
       } catch (error) {
         console.error("Failed to load embeddings stats:", error);
         setEmbeddingsStats({
-          total: 795,
-          withEmbeddings: 795,
+          total: 822,
+          withEmbeddings: 822,
           withoutEmbeddings: 0,
           completionPercentage: 100,
         }); // Fallback
@@ -158,8 +173,8 @@ export default function Home() {
       if (isGitHubPages) {
         // For GitHub Pages, embeddings are already generated
         setEmbeddingsStats({
-          total: 795,
-          withEmbeddings: 795,
+          total: 822,
+          withEmbeddings: 822,
           withoutEmbeddings: 0,
           completionPercentage: 100,
         });
@@ -251,7 +266,7 @@ export default function Home() {
                 className="text-lg font-bold text-blue-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {stats?.total ? stats.total - (stats.miniCount || 0) : 795}
+                {stats?.shaiHulud2Count ?? 798}
               </span>
             </div>
             <div className="bg-purple-900/30 border border-purple-500/50 px-4 py-2 backdrop-blur-sm">
@@ -262,7 +277,7 @@ export default function Home() {
                 className="text-lg font-bold text-purple-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {stats?.miniCount || 24}
+                {stats?.miniCount ?? 24}
               </span>
             </div>
             <div className="bg-gray-900/30 border border-gray-500/50 px-4 py-2 backdrop-blur-sm">
@@ -310,7 +325,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSemanticSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSemanticSearch()}
                 placeholder="Enter package name to check if compromised..."
                 className="flex-1 bg-black/50 border border-red-500/50 text-white px-4 py-3 font-mono text-lg focus:outline-none focus:border-red-500 placeholder-gray-500"
               />
@@ -739,7 +754,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSemanticSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSemanticSearch()}
                 placeholder="Package name..."
                 className="flex-1 bg-black/50 border border-gray-700 text-white px-3 py-2 font-mono text-sm focus:outline-none focus:border-blue-500"
               />
