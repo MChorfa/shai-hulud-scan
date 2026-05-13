@@ -24,6 +24,11 @@ import {
   Database,
   Eye,
   Zap,
+  Bug,
+  Terminal,
+  Package,
+  Hash,
+  Code2,
 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
@@ -514,17 +519,187 @@ export default function Home() {
               ).map((phase) => (
                 <div
                   key={phase.step}
-                  className="bg-black/50 border border-gray-700 p-4 hover:border-red-500 transition-colors cursor-pointer group"
+                  className={`bg-black/50 border border-gray-700 p-4 transition-colors cursor-pointer group ${
+                    activeAttackTab === "mini-shai-hulud"
+                      ? "hover:border-purple-500"
+                      : "hover:border-red-500"
+                  }`}
                 >
-                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-900/50">
-                    <phase.icon className="w-5 h-5 text-gray-400 group-hover:text-red-400" />
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 ${
+                      activeAttackTab === "mini-shai-hulud"
+                        ? "bg-gray-800 group-hover:bg-purple-900/50"
+                        : "bg-gray-800 group-hover:bg-red-900/50"
+                    }`}
+                  >
+                    <phase.icon
+                      className={`w-5 h-5 text-gray-400 ${
+                        activeAttackTab === "mini-shai-hulud"
+                          ? "group-hover:text-purple-400"
+                          : "group-hover:text-red-400"
+                      }`}
+                    />
                   </div>
-                  <h3 className="font-bold text-red-400 mb-1">
+                  <h3
+                    className={`font-bold mb-1 ${
+                      activeAttackTab === "mini-shai-hulud"
+                        ? "text-purple-400"
+                        : "text-red-400"
+                    }`}
+                  >
                     {phase.step}. {phase.title}
                   </h3>
                   <p className="text-xs text-gray-500">{phase.desc}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Live Campaign Intel */}
+            {activeAttackTab === "mini-shai-hulud" && (
+              <div className="mt-6 border-t border-purple-800/50 pt-6">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-purple-300 mb-4 flex items-center gap-2">
+                  <Bug className="w-4 h-4" />
+                  Live Campaign Intel
+                </h3>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Compromised Packages */}
+                  <div className="bg-black/50 border border-purple-800/50 p-4">
+                    <h4 className="text-xs font-bold text-purple-300 uppercase mb-3 flex items-center gap-2">
+                      <Package className="w-3 h-3" />
+                      Confirmed Compromised Packages
+                    </h4>
+                    <div className="space-y-2">
+                      {[
+                        {
+                          name: "@tanstack/react-router",
+                          ver: "1.169.5 / 1.169.8",
+                        },
+                        {
+                          name: "@tanstack/vue-router",
+                          ver: "1.169.5 / 1.169.8",
+                        },
+                        {
+                          name: "@tanstack/solid-router",
+                          ver: "1.169.5 / 1.169.8",
+                        },
+                        {
+                          name: "@tanstack/react-store",
+                          ver: "1.169.5 / 1.169.8",
+                        },
+                      ].map((pkg) => (
+                        <div
+                          key={pkg.name}
+                          className="flex justify-between items-center bg-purple-900/20 border border-purple-800/30 px-3 py-2"
+                        >
+                          <span className="font-mono text-sm text-purple-200">
+                            {pkg.name}
+                          </span>
+                          <span className="text-xs text-purple-400 font-mono">
+                            {pkg.ver}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      +20 additional packages in campaign
+                    </p>
+                  </div>
+
+                  {/* IOC Payload */}
+                  <div className="bg-black/50 border border-purple-800/50 p-4">
+                    <h4 className="text-xs font-bold text-purple-300 uppercase mb-3 flex items-center gap-2">
+                      <Hash className="w-3 h-3" />
+                      Detected IOC Pattern
+                    </h4>
+                    <div className="bg-black border border-purple-900/50 p-3 font-mono text-xs space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-purple-500 shrink-0">
+                          optionalDependencies:
+                        </span>
+                        <span className="text-red-400">
+                          malicious-pkg: &quot;* &amp;&amp; exit 1&quot;
+                        </span>
+                      </div>
+                      <div className="border-t border-gray-800 pt-2 flex items-start gap-2">
+                        <span className="text-purple-500 shrink-0">
+                          prepare:
+                        </span>
+                        <span className="text-red-400">
+                          bun &lt;malicious-script&gt; || exit 1
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3 space-y-1">
+                      <div className="flex items-start gap-2 text-xs text-gray-400">
+                        <Terminal className="w-3 h-3 text-purple-400 mt-0.5 shrink-0" />
+                        <span>
+                          Payload triggers on install before build fails
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2 text-xs text-gray-400">
+                        <Code2 className="w-3 h-3 text-purple-400 mt-0.5 shrink-0" />
+                        <span>Exfiltrates secrets then forces build crash</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Analysis Instructions */}
+          <section className="bg-[#0a0a0a] border border-gray-800 p-8 rounded-sm">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Shield className="w-6 h-6 text-red-500" />
+              Analysis Instructions
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-base">
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Upload package.json
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Upload your package.json, package-lock.json, or SBOM file
+                    for complete project analysis including optionalDependencies
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Composite Search
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Use semantic + full-text matching for better results
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Local Embeddings
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Generate embeddings locally for enhanced semantic search
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">Privacy First</h3>
+                  <p className="text-gray-300 text-sm">
+                    All analysis runs locally - no external API calls or data
+                    sharing
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 
