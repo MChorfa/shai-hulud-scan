@@ -34,7 +34,7 @@ export default function Navigation() {
               className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"
             >
               <FileText className="w-4 h-4" />
-              Analyze SBOM
+              Analyze
             </Link>
             <Link
               href="/developers"

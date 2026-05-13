@@ -21,7 +21,7 @@ export default function Developers() {
 
       <main className="max-w-7xl mx-auto w-full p-6 relative z-10">
         <header className="mb-12 border-b border-red-900/50 pb-8">
-          <h1 className="text-4xl md:text-2xl font-black text-white mb-4 flex items-center gap-4">
+          <h1 className="text-2xl md:text-4xl font-black text-white mb-4 flex items-center gap-4">
             <Terminal className="w-12 h-12 text-red-500" />
             <span className="glitch" data-text="DEVELOPER ACCESS">
               DEVELOPER ACCESS
@@ -190,7 +190,7 @@ export default function Developers() {
                 <div className="bg-black/50 p-3 border border-gray-800">
                   <span className="text-gray-500"># Run full pipeline</span>
                   <br />
-                  <span className="text-white">dagger call pipeline</span>
+                  <span className="text-white">dagger call deploy</span>
                 </div>
                 <div className="bg-black/50 p-3 border border-gray-800">
                   <span className="text-gray-500"># Scan local project</span>
@@ -226,7 +226,7 @@ export default function Developers() {
                 <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                   <span className="text-gray-400 text-sm">Framework</span>
                   <span className="text-white font-mono text-sm">
-                    Next.js 15
+                    Next.js 16
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-gray-800 pb-2">

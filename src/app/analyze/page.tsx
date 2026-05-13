@@ -212,8 +212,18 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-red-50 selection:bg-red-900 selection:text-white">
+    <div className="min-h-screen bg-black text-red-50 selection:bg-red-900 selection:text-white relative overflow-hidden crt">
       <Navigation />
+
+      {/* CRT Overlay Effect */}
+      <div className="fixed inset-0 pointer-events-none opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-900/10 to-transparent animate-pulse"></div>
+      </div>
+
+      {/* Scanlines */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="h-px bg-green-900/20 animate-pulse"></div>
+      </div>
 
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
@@ -235,7 +245,7 @@ export default function AnalyzePage() {
             onDragOver={handleDrag}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
-            className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
+            className={`border-2 border-dashed rounded-sm p-12 text-center transition-colors ${
               dragActive
                 ? "border-red-500 bg-red-900/10"
                 : "border-gray-700 bg-gray-900/50 hover:border-gray-600"
@@ -268,7 +278,7 @@ export default function AnalyzePage() {
 
         {/* Error Display */}
         {error && (
-          <div className="bg-red-900/20 border border-red-500/30 p-4 rounded-lg mb-6">
+          <div className="bg-red-900/20 border border-red-500/30 p-4 rounded-sm mb-6">
             <div className="flex items-center gap-2 text-red-400 mb-2">
               <XCircle className="w-5 h-5" />
               <span className="font-bold">Analysis Error</span>
@@ -281,7 +291,7 @@ export default function AnalyzePage() {
         {result && (
           <div className="space-y-6">
             {/* Summary */}
-            <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-lg">
+            <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-white">
                   Analysis Summary
@@ -351,7 +361,7 @@ export default function AnalyzePage() {
 
             {/* Findings from package.json IOC detection */}
             {result.findings && result.findings.length > 0 && (
-              <div className="bg-[#0a0a0a] border border-red-800 p-6 rounded-lg">
+              <div className="bg-[#0a0a0a] border border-red-800 p-6 rounded-sm">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                   <AlertTriangle className="w-6 h-6 text-red-500" />
                   IOC Findings ({result.findings.length})
@@ -433,7 +443,7 @@ export default function AnalyzePage() {
 
             {/* Compromised Packages */}
             {result.compromisedPackages.length > 0 && (
-              <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-lg">
+              <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-sm">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                   <AlertTriangle className="w-6 h-6 text-red-500" />
                   Vulnerable Packages ({result.compromisedPackages.length})
@@ -491,7 +501,7 @@ export default function AnalyzePage() {
 
             {/* Safe Packages */}
             {result.safePackages.length > 0 && (
-              <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-lg">
+              <div className="bg-[#0a0a0a] border border-gray-800 p-6 rounded-sm">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                   <BarChart3 className="w-6 h-6 text-green-500" />
                   Safe Packages ({result.safePackages.length})

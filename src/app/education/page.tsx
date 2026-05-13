@@ -11,6 +11,7 @@ import {
   GitBranch,
   Package,
 } from "lucide-react";
+import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import { ContentData } from "@/types/education";
 
@@ -253,8 +254,18 @@ export default function EducationPage() {
   const currentContent = content[activeTab as keyof typeof content];
 
   return (
-    <div className="min-h-screen bg-black text-red-50 selection:bg-red-900 selection:text-white">
+    <div className="min-h-screen bg-black text-red-50 selection:bg-red-900 selection:text-white relative overflow-hidden crt">
       <Navigation />
+
+      {/* CRT Overlay Effect */}
+      <div className="fixed inset-0 pointer-events-none opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-900/10 to-transparent animate-pulse"></div>
+      </div>
+
+      {/* Scanlines */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="h-px bg-green-900/20 animate-pulse"></div>
+      </div>
 
       {/* Header */}
       <header className="border-b border-red-900/50 bg-[#0a0a0a]">
@@ -353,29 +364,38 @@ export default function EducationPage() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
+              <Link
+                href="/analyze"
+                className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors block"
+              >
                 <Package className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Upload SBOM</h3>
                 <p className="text-xs text-gray-400">
                   Analyze your package-lock.json file
                 </p>
-              </button>
+              </Link>
 
-              <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
+              <Link
+                href="/"
+                className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors block"
+              >
                 <GitBranch className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Composite Search</h3>
                 <p className="text-xs text-gray-400">
                   Use semantic + full-text search
                 </p>
-              </button>
+              </Link>
 
-              <button className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors">
+              <Link
+                href="/"
+                className="bg-blue-900/20 border border-blue-500/30 p-4 hover:border-blue-500 transition-colors block"
+              >
                 <Lock className="w-6 h-6 text-blue-400 mb-2" />
                 <h3 className="font-bold text-white mb-1">Local Embeddings</h3>
                 <p className="text-xs text-gray-400">
                   Generate embeddings locally
                 </p>
-              </button>
+              </Link>
             </div>
           </section>
         </div>

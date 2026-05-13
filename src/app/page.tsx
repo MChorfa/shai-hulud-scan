@@ -36,6 +36,7 @@ interface PackageStats {
     count: number;
     percentage: number;
   }>;
+  campaigns: Array<{ campaign: string; count: number }>;
 }
 
 export default function Home() {
@@ -112,7 +113,21 @@ export default function Home() {
         }
 
         if (data && data.stats) {
-          setStats(data);
+          // Derive campaign counts from the campaigns array
+          const campaigns = data.campaigns || [];
+          const miniCount = campaigns.find(
+            (c: { campaign: string; count: number }) =>
+              c.campaign === "mini-shai-hulud",
+          )?.count;
+          const shaiHulud2Count = campaigns.find(
+            (c: { campaign: string; count: number }) =>
+              c.campaign === "shai-hulud-2",
+          )?.count;
+          setStats({
+            ...data,
+            miniCount,
+            shaiHulud2Count,
+          });
         }
       } catch (error) {
         console.error("Failed to load package stats:", error);
@@ -142,8 +157,8 @@ export default function Home() {
       } catch (error) {
         console.error("Failed to load embeddings stats:", error);
         setEmbeddingsStats({
-          total: 795,
-          withEmbeddings: 795,
+          total: 822,
+          withEmbeddings: 822,
           withoutEmbeddings: 0,
           completionPercentage: 100,
         }); // Fallback
@@ -158,8 +173,8 @@ export default function Home() {
       if (isGitHubPages) {
         // For GitHub Pages, embeddings are already generated
         setEmbeddingsStats({
-          total: 795,
-          withEmbeddings: 795,
+          total: 822,
+          withEmbeddings: 822,
           withoutEmbeddings: 0,
           completionPercentage: 100,
         });
@@ -251,7 +266,7 @@ export default function Home() {
                 className="text-lg font-bold text-blue-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {stats?.total ? stats.total - (stats.miniCount || 0) : 795}
+                {stats?.shaiHulud2Count ?? 798}
               </span>
             </div>
             <div className="bg-purple-900/30 border border-purple-500/50 px-4 py-2 backdrop-blur-sm">
@@ -262,7 +277,7 @@ export default function Home() {
                 className="text-lg font-bold text-purple-400"
                 style={{ fontFamily: "monospace" }}
               >
-                {stats?.miniCount || 24}
+                {stats?.miniCount ?? 24}
               </span>
             </div>
             <div className="bg-gray-900/30 border border-gray-500/50 px-4 py-2 backdrop-blur-sm">
@@ -310,7 +325,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSemanticSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSemanticSearch()}
                 placeholder="Enter package name to check if compromised..."
                 className="flex-1 bg-black/50 border border-red-500/50 text-white px-4 py-3 font-mono text-lg focus:outline-none focus:border-red-500 placeholder-gray-500"
               />
@@ -512,6 +527,61 @@ export default function Home() {
               ))}
             </div>
           </section>
+
+          {/* Analysis Instructions */}
+          <section className="bg-[#0a0a0a] border border-gray-800 p-8 rounded-sm">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Shield className="w-6 h-6 text-red-500" />
+              Analysis Instructions
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-base">
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Upload package.json
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Upload your package.json, package-lock.json, or SBOM file
+                    for complete project analysis including optionalDependencies
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Composite Search
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Use semantic + full-text matching for better results
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">
+                    Local Embeddings
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Generate embeddings locally for enhanced semantic search
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                <div>
+                  <h3 className="font-bold text-white mb-1">Privacy First</h3>
+                  <p className="text-gray-300 text-sm">
+                    All analysis runs locally - no external API calls or data
+                    sharing
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         {/* Right Column: Stats & Advanced */}
@@ -684,7 +754,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSemanticSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSemanticSearch()}
                 placeholder="Package name..."
                 className="flex-1 bg-black/50 border border-gray-700 text-white px-3 py-2 font-mono text-sm focus:outline-none focus:border-blue-500"
               />
@@ -710,63 +780,6 @@ export default function Home() {
                   : `GENERATE EMBEDDINGS (${embeddingsStats.withoutEmbeddings} left)`}
               </button>
             )}
-          </section>
-        </div>
-
-        {/* Full-width Analysis Instructions */}
-        <div className="lg:col-span-12">
-          <section className="bg-[#0a0a0a] border border-gray-800 p-8 rounded-sm">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-              <Shield className="w-6 h-6 text-red-500" />
-              Analysis Instructions
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-base">
-              <div className="flex items-start gap-3">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <h3 className="font-bold text-white mb-1">
-                    Upload package.json
-                  </h3>
-                  <p className="text-gray-300 text-sm">
-                    Upload your package.json, package-lock.json, or SBOM file
-                    for complete project analysis including optionalDependencies
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <h3 className="font-bold text-white mb-1">
-                    Composite Search
-                  </h3>
-                  <p className="text-gray-300 text-sm">
-                    Use semantic + full-text matching for better results
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <h3 className="font-bold text-white mb-1">
-                    Local Embeddings
-                  </h3>
-                  <p className="text-gray-300 text-sm">
-                    Generate embeddings locally for enhanced semantic search
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <h3 className="font-bold text-white mb-1">Privacy First</h3>
-                  <p className="text-gray-300 text-sm">
-                    All analysis runs locally - no external API calls or data
-                    sharing
-                  </p>
-                </div>
-              </div>
-            </div>
           </section>
         </div>
       </main>
